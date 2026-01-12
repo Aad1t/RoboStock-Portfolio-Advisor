@@ -6,33 +6,44 @@ A Python-based automated portfolio optimization tool that combines LSTM neural n
 
 This project implements a sophisticated portfolio management system that uses machine learning for price prediction and stochastic optimization for asset allocation. The "Market Meet" strategy aims to deliver returns closely aligned with major market indices (S&P 500 and TSX Composite) while maintaining stable risk profiles.
 
-## Key Features
+## How It Works
 
-### 🤖 Machine Learning Price Prediction
-- **LSTM Neural Networks**: Deep learning model trained on 3+ years of historical price data
-- **Multi-stock training**: Global model learns patterns across 20+ securities simultaneously
-- **Backtesting**: Validates predictions against actual market performance with visualization
+### 1. Stock Filtering Pipeline
+```
+Raw Stock Data
+    ↓
+Liquidity Filter (monthly volume, currency)
+    ↓
+Volatility & Quality Metrics
+    ↓
+Composite Scoring (momentum, growth, profitability)
+    ↓
+Sector Diversification Constraints
+    ↓
+Top N Stocks Selected
+```
 
-### 📊 Intelligent Stock Filtering
-- **Multi-factor analysis**: Evaluates momentum (3M, 6M, 12M), revenue growth, profit margins, ROE, and relative strength
-- **Composite scoring**: Weighted ranking system to identify high-potential securities
-- **Market cap diversity**: Ensures mix of large-cap, mid-cap, and small-cap stocks
-- **Sector constraints**: Prevents over-concentration in any single sector (max 40%)
-- **Liquidity requirements**: Filters for minimum monthly trading volume and currency (USD/CAD only)
+### 2. LSTM Price Prediction
+- **Architecture**: 2 LSTM layers (50 units each) + dropout (20%) + dense output layer
+- **Training data**: 60-day lookback windows from all selected stocks
+- **Validation**: 80/20 train-test split with performance backtesting
+- **Predictions**: Next-day price forecasts for portfolio optimization
 
-### 💼 Portfolio Optimization
-- **Monte Carlo simulation**: 10,000+ iterations to find optimal weight allocation
-- **Target matching**: Aims to replicate market benchmark returns (S&P 500 + TSX average)
-- **Investment constraints**: 
-  - Minimum position: ~2.08% (1/48 of portfolio)
-  - Maximum position: 15% (prevents over-concentration)
-  - Full investment: Weights sum to 100%
-- **Transaction cost modeling**: Incorporates broker fees ($2.15 minimum + $0.001/share)
+### 3. Monte Carlo Optimization
+```python
+For 10,000 iterations:
+    1. Generate random weight vector (respecting constraints)
+    2. Calculate portfolio return using LSTM predictions
+    3. Measure distance from benchmark target return
+    4. Track best-matching allocation
+Return optimal weights
+```
 
-### ⚡ Performance Optimization
-- **Parallel processing**: Multi-threaded Monte Carlo simulation for faster computation
-- **Currency conversion**: Automatic USD/CAD exchange rate handling
-- **Efficient data structures**: Optimized for handling large datasets
+### 4. Portfolio Construction
+- Convert optimal weights to share quantities
+- Apply realistic transaction costs
+- Ensure full investment of $1,000,000 capital
+- Normalize final weights to 100%
 
 ## Installation
 
@@ -93,44 +104,11 @@ The program generates:
   - Columns: `Ticker`, `Shares`
   - Ready for trade execution
 
-## How It Works
+## Key Features
 
-### 1. Stock Filtering Pipeline
-```
-Raw Stock Data
-    ↓
-Liquidity Filter (monthly volume, currency)
-    ↓
-Volatility & Quality Metrics
-    ↓
-Composite Scoring (momentum, growth, profitability)
-    ↓
-Sector Diversification Constraints
-    ↓
-Top N Stocks Selected
-```
-
-### 2. LSTM Price Prediction
-- **Architecture**: 2 LSTM layers (50 units each) + dropout (20%) + dense output layer
-- **Training data**: 60-day lookback windows from all selected stocks
-- **Validation**: 80/20 train-test split with performance backtesting
-- **Predictions**: Next-day price forecasts for portfolio optimization
-
-### 3. Monte Carlo Optimization
-```python
-For 10,000 iterations:
-    1. Generate random weight vector (respecting constraints)
-    2. Calculate portfolio return using LSTM predictions
-    3. Measure distance from benchmark target return
-    4. Track best-matching allocation
-Return optimal weights
-```
-
-### 4. Portfolio Construction
-- Convert optimal weights to share quantities
-- Apply realistic transaction costs
-- Ensure full investment of $1,000,000 capital
-- Normalize final weights to 100%
+- **Uses LSTM neural networks trained on multi-year historical data to predict stock prices and inform portfolio decisions
+- **Applies multi-factor screening and Monte Carlo simulation to construct diversified portfolios that closely track market benchmarks
+- **Incorporates real-world constraints including sector limits, position sizing, liquidity filters, currency conversion, and transaction costs
 
 ## Performance Metrics
 
