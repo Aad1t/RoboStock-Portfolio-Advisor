@@ -104,12 +104,6 @@ The program generates:
   - Columns: `Ticker`, `Shares`
   - Ready for trade execution
 
-## Key Features
-
-- **Uses LSTM neural networks trained on multi-year historical data to predict stock prices and inform portfolio decisions
-- **Applies multi-factor screening and Monte Carlo simulation to construct diversified portfolios that closely track market benchmarks
-- **Incorporates real-world constraints including sector limits, position sizing, liquidity filters, currency conversion, and transaction costs
-
 ## Performance Metrics
 
 The strategy is designed to:
